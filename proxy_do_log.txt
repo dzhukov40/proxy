@@ -1,0 +1,60 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+1) создаем проектик в идее [idea]
+  - создаем папку для хранения проектика
+  - создаем новый проект [File->new project]
+  - выбираем [Maven] (*) архитип [javafx-basic-archetype]
+    - groupId    == com.zenjava
+    - artifactId == javafx-basic-archetype
+    - version    == 8.1.5
+  - ставим артифакты:
+    - GroupId    [ ru.doneathome ]
+    - ArtifactId [ proxy ]
+    - Version    [ 1.0.0 ]
+- имя проектика [ proxy ]
+
+
+
+2) (1/5) хотим создать форму GUI
+  - посмотрели что есть [swing] но ему на смену пришел [javaFX]
+  - создаем файл [*.fxml] + создаем класс контроллек, который в файле указываем
+    - [*] поставили в файле тип панели [ AnchorPane ] 
+    - (*) это панель с жесткой привязкой компонентов по координатам
+  - пишем простой текстик:
+    [
+      <Button text="Say 'Hello World'" onAction="#sayHelloWorld"/>
+      <Label GridPane.rowIndex="1" fx:id="helloWorld"/>
+    ]
+  - жмем [Alt+Enter] жмем и можем сгенерить поле/метод в контроллере
+  - добавили еще файл стилей [stylesheets="/ru/doneathome/css/sample.css"]
+
+
+2) (2/5) хотим создать форму GUI
+  - можно установить [Scene Builder] и через него в IDEA открывать [*.fxml]
+    - качаем [http://gluonhq.com/products/scene-builder/#download *.deb] (*) GWON
+    - поставили для [java9] поставим еще восьмую [java8]
+    - (*) [ sudo apt install ./ ]
+    - ПМК на [*.fxml] выбираем открыть в [SceneBuilder] 
+      - (*) указываем установленный проект в [/opt/SceneBuilder]
+
+
+
+
+
+
+
+
+
+
+
