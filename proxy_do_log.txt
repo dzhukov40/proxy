@@ -29,7 +29,8 @@
 2) (1/5) хотим создать форму GUI
   - посмотрели что есть [swing] но ему на смену пришел [javaFX]
   - создаем файл [*.fxml] + создаем класс контроллек, который в файле указываем
-    - [*] поставили в файле тип панели [ AnchorPane ] 
+    - (*) учебник [ http://code.makery.ch/library/javafx-8-tutorial/ru/part1/ ]
+    - [*] поставили в файле тип панели [ AnchorPane ]
     - (*) это панель с жесткой привязкой компонентов по координатам
   - пишем простой текстик:
     [
@@ -48,6 +49,22 @@
     - ПМК на [*.fxml] выбираем открыть в [SceneBuilder] 
       - (*) указываем установленный проект в [/opt/SceneBuilder]
 
+3) (3/5) хотим создать форму GUI
+  - начинаем идти по урокам [http://code.makery.ch/library/javafx-8-tutorial/ru/part1/]
+  - (*) главной панелью будет [AnchorPane]
+    - выпаскиваем панель [SplitPane]
+    - теперь добавляем две панели [AnchorPane] на [SplitPane]
+    - (*)
+
+
+
+
+  - в корневой панели надо привязать контроллер к форме[fx:controller="ru.doneathome.forms.mainController"]
+    - сделали через [SceneBuilder] идем в [Document]->[Controller]->[Controller class]
+  - для привязки из формы [*.fxml] в контроллек добавляем:
+    - [ fx:id="root" ] (*) теперь можем создать такое поле в контроллере
+    - [ onAction="#doCreate" ] (*) теперь можем добавить обработчик события
+      - (*) [onAction] - это один из видов события
 
 
 
@@ -55,6 +72,24 @@
 
 
 
+  - для того чтобы в [*.jar] был виден файл стилей поставиил полный путь и относительный для отладки
+    - [ ... stylesheets="/ru/doneathome/css/sample.css" ... ]
+    - [ ... ... ]
 
+  - в [pom.xml] мы добавили плагин, чтоб файл манифеста клался куда надо
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
