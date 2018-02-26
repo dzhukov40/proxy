@@ -18,10 +18,11 @@ public class MainTableFunctional {
 
     public static void initTable(TableView<Pipe> table) {
 
-        TableColumn name = new TableColumn("Name");
-        TableColumn localhostPort = new TableColumn("Localhost Port");
-        TableColumn remoteIP = new TableColumn("Remote IP");
-        TableColumn remotePort = new TableColumn("Remote Port");
+        // создаем нашы столбцы для таблицы
+        TableColumn<Pipe, String>  name = new TableColumn("Name");
+        TableColumn<Pipe, String>  localhostPort = new TableColumn("Localhost Port");
+        TableColumn<Pipe, String>  remoteIP = new TableColumn("Remote IP");
+        TableColumn<Pipe, String>  remotePort = new TableColumn("Remote Port");
 
         name.setCellValueFactory(new PropertyValueFactory("name"));
         localhostPort.setCellValueFactory(new PropertyValueFactory("localhostPort"));
@@ -33,6 +34,36 @@ public class MainTableFunctional {
         localhostPort.setCellFactory(TextFieldTableCell.<Pipe>forTableColumn());
         remoteIP.setCellFactory(TextFieldTableCell.<Pipe>forTableColumn());
         remotePort.setCellFactory(TextFieldTableCell.<Pipe>forTableColumn());
+
+        // ставим обработчики на события изменения данных в столбцах таблицы
+        name.setOnEditCommit(
+                (TableColumn.CellEditEvent<Pipe, String> t) -> {
+                     ((Pipe) t.getTableView().getItems().get(
+                            t.getTablePosition().getRow())
+                    ).setName(t.getNewValue());
+                });
+
+        localhostPort.setOnEditCommit(
+                (TableColumn.CellEditEvent<Pipe, String> t) -> {
+                    ((Pipe) t.getTableView().getItems().get(
+                            t.getTablePosition().getRow())
+                    ).setLocalhostPort(t.getNewValue());
+                });
+
+        remoteIP.setOnEditCommit(
+                (TableColumn.CellEditEvent<Pipe, String> t) -> {
+                    ((Pipe) t.getTableView().getItems().get(
+                            t.getTablePosition().getRow())
+                    ).setRemoteIP(t.getNewValue());
+                });
+
+        remotePort.setOnEditCommit(
+                (TableColumn.CellEditEvent<Pipe, String> t) -> {
+                    ((Pipe) t.getTableView().getItems().get(
+                            t.getTablePosition().getRow())
+                    ).setRemotePort(t.getNewValue());
+                });
+
 
 
         name.setMinWidth(10);

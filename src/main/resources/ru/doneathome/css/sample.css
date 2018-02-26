@@ -5,17 +5,17 @@
     -fx-font-size: 16;
 }
 
-.text-field {
+/*.text-field {
     -fx-min-width: 170;
     -fx-max-width: 170;
     -fx-border-width: 5;
     -fx-border-color: #ffffff;
     -fx-background-color: #b0b0b0
-}
+}*/
 
-.table-view {
+/*.table-view {
     -fx-background-color: #2b2b2b;
-}
+}*/
 
 .list-view {
     -fx-min-width: 170;

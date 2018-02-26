@@ -93,3 +93,15 @@
         </plugins>
     </build>
 
+
+
+
+  - проэкт компилился на java 1.5 [ lambda expressions are not supported in -source 1.5 ]
+    - добавили проперти:
+      [
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+      ]
+    - поменяли настройки проекта , везде указав что брать версию в зависимости от JDK
+      - (*) File->project Structure->Project
+      - (*) File->project Structure->Modules
