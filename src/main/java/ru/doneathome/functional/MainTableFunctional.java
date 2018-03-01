@@ -10,13 +10,13 @@ import ru.doneathome.model.Pipe;
 
 public class MainTableFunctional {
 
-    private static ObservableList<Pipe> data = FXCollections.observableArrayList(
-            new Pipe("tort", "9510", "a@example.com", "2301"),
-            new Pipe("Doc", "2012", "b@example.com", "2301"),
-            new Pipe("Mok", "3456", "c@example.com", "2301")
-    );
+    private TableView<Pipe> mainTable;
 
-    public static void initTable(TableView<Pipe> table) {
+
+
+    public MainTableFunctional(TableView<Pipe> table) {
+
+        mainTable = table;
 
         // создаем нашы столбцы для таблицы
         TableColumn<Pipe, String>  name = new TableColumn("Name");
@@ -65,19 +65,23 @@ public class MainTableFunctional {
                 });
 
 
+        mainTable.getColumns().addAll(name, localhostPort, remoteIP, remotePort);
+        mainTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        name.setMinWidth(10);
-        localhostPort.setMinWidth(10);
-        remoteIP.setMinWidth(10);
-        remotePort.setMinWidth(10);
-
-
-        table.getColumns().addAll(name, localhostPort, remoteIP, remotePort);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-        table.setEditable(true);
-        table.setItems(data);
-
+        mainTable.setEditable(true);
 
     }
+
+
+    public void setItems (ObservableList<Pipe> data) {
+        mainTable.setItems(data);
+    }
+
+    public ObservableList<Pipe> getItems () {
+        return mainTable.getItems();
+    }
+
+
+
+
 }

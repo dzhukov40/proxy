@@ -9,6 +9,18 @@ public class Pipe {
     private final SimpleStringProperty remoteIP;
     private final SimpleStringProperty remotePort;
 
+
+    public Pipe(){
+        this.name = new SimpleStringProperty();
+        this.name.set("name");
+        this.localhostPort = new SimpleStringProperty();
+        this.localhostPort.set("localhostPort");
+        this.remoteIP = new SimpleStringProperty();
+        this.remoteIP.set("remoteIP");
+        this.remotePort = new SimpleStringProperty();
+        this.remotePort.set("remotePort");
+    }
+
     public Pipe(SimpleStringProperty name, SimpleStringProperty localhostPort, SimpleStringProperty remoteIP, SimpleStringProperty remotePort) {
         this.name = name;
         this.localhostPort = localhostPort;
@@ -75,5 +87,15 @@ public class Pipe {
 
     public void setRemotePort(String remotePort) {
         this.remotePort.set(remotePort);
+    }
+
+    @Override
+    public String toString() {
+        return "Pipe{" +
+                "name=" + name +
+                ", localhostPort=" + localhostPort +
+                ", remoteIP=" + remoteIP +
+                ", remotePort=" + remotePort +
+                '}';
     }
 }

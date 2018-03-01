@@ -15,13 +15,31 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import ru.doneathome.forms.MainController;
+import ru.doneathome.functional.ConfigurationFunctional;
 import ru.doneathome.functional.MainTableFunctional;
+import ru.doneathome.model.Configuration;
 import ru.doneathome.model.Pipe;
+import ru.doneathome.model.Profile;
+
+import java.util.List;
+
 
 public class Main extends Application {
 
+    private static ObservableList<Pipe> data = FXCollections.observableArrayList(
+            new Pipe("tort", "9510", "a@example.com", "2301"),
+            new Pipe("Doc", "2012", "b@example.com", "2301"),
+            new Pipe("Mok", "3456", "c@example.com", "2301")
+    );
 
 
+
+
+    // управляем главной табличкой
+    private MainTableFunctional mainTableFunctional;
+
+    // управляем конфигурацией
+    private ConfigurationFunctional configurationFunctional;
 
 
 
@@ -34,15 +52,29 @@ public class Main extends Application {
 
         // получаем инстанс контроллера из нашей формы
         MainController mainController = fxmlLoader.getController();
-
         TableView<Pipe> table = mainController.pipeTable;
 
-        MainTableFunctional.initTable(table);
+        // инициализируем табличку
+        mainTableFunctional = new MainTableFunctional(table);
+        mainTableFunctional.setItems(data);
+
+        // работаем с конфигурацией
+        configurationFunctional = new ConfigurationFunctional();
+
+        Profile profile = new Profile();
+        profile.setPipes(data);
 
 
 
+        Configuration configuration = new Configuration();
+        configuration.addProfile(profile);
+
+        configurationFunctional.writeConfiguration("./tort.txt", configuration);
 
 
+        Configuration configuration1 = configurationFunctional.readConfiguration("./tort.txt");
+
+        System.out.print(configuration1);
 
 
 
