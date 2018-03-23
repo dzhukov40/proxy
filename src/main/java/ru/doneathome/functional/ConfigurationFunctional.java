@@ -12,6 +12,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import ru.doneathome.model.Configuration;
 import ru.doneathome.model.Pipe;
 
+/**
+ * читаем/записываем конфигурацию в файл
+ * - формат JSON
+ */
 public class ConfigurationFunctional {
 
 
@@ -20,8 +24,7 @@ public class ConfigurationFunctional {
         byte[] jsonData = Files.readAllBytes(Paths.get(fileName));
 
         ObjectMapper objectMapper = new ObjectMapper();
-        Configuration configuration = objectMapper.readValue(jsonData, Configuration.class);
-        return configuration;
+        return objectMapper.readValue(jsonData, Configuration.class);
     }
 
     public void writeConfiguration (String fileName, Configuration configuration) throws IOException {

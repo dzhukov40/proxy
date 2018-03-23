@@ -56,21 +56,12 @@
     - теперь добавляем две панели [AnchorPane] на [SplitPane]
     - (*)
 
-
-
-
   - в корневой панели надо привязать контроллер к форме[fx:controller="ru.doneathome.forms.mainController"]
     - сделали через [SceneBuilder] идем в [Document]->[Controller]->[Controller class]
   - для привязки из формы [*.fxml] в контроллек добавляем:
     - [ fx:id="root" ] (*) теперь можем создать такое поле в контроллере
     - [ onAction="#doCreate" ] (*) теперь можем добавить обработчик события
       - (*) [onAction] - это один из видов события
-
-
-
-
-
-
 
   - для того чтобы в [*.jar] был виден файл стилей поставиил полный путь и относительный для отладки
     - [ ... stylesheets="/ru/doneathome/css/sample.css" ... ]
@@ -93,9 +84,6 @@
         </plugins>
     </build>
 
-
-
-
   - проэкт компилился на java 1.5 [ lambda expressions are not supported in -source 1.5 ]
     - добавили проперти:
       [
@@ -105,3 +93,9 @@
     - поменяли настройки проекта , везде указав что брать версию в зависимости от JDK
       - (*) File->project Structure->Project
       - (*) File->project Structure->Modules
+
+
+3) хотим отладить основной ф-ионал сервера
+  - как запустить свой сервер в [linux]?
+    - [ nc -k -l 4444 ] заняли 4444 порт
+    - (*) закрыть [ telnet ] -> "ctrl X" или "ctrl ]" потом "q"
