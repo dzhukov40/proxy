@@ -14,9 +14,6 @@ public class ThreadProxy extends Thread {
     private final String SERVER_URL;
     private final int SERVER_PORT;
 
-    private final int BUF_REQUEST_SIZE = 4096;
-    private final int BUF_RESPONSE_SIZE = 4096;
-
 
     ThreadProxy(Socket sClient, String ServerUrl, int ServerPort) {
         this.SERVER_URL = ServerUrl;
@@ -28,67 +25,95 @@ public class ThreadProxy extends Thread {
 
     @Override
     public void run() {
+
+        Socket server = null;
+
         try {
-            final byte[] request = new byte[BUF_REQUEST_SIZE];
-            byte[] reply = new byte[BUF_RESPONSE_SIZE];
-            final InputStream inFromClient = sClient.getInputStream();
-            final OutputStream outToClient = sClient.getOutputStream();
-            Socket client = null;
-            Socket server = null;
+            server = new Socket(SERVER_URL, SERVER_PORT);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-            // connects a socket to the server
-            try {
-                server = new Socket(SERVER_URL, SERVER_PORT);
-            } catch (IOException e) {
-                PrintWriter out = new PrintWriter(new OutputStreamWriter(outToClient));
-                out.flush();
-                throw new RuntimeException(e);
-            }
+        // 4-е потока наши
+        InputStream inFromClient = null;
+        OutputStream outToClient = null;
 
-            // потоки от сервера
-            final InputStream inFromServer = server.getInputStream();
-            final OutputStream outToServer = server.getOutputStream();
+        InputStream inFromServer = null;
+        OutputStream outToServer = null;
 
-            // делаем поток передачи данных CLIENT -> SERVER
-            new Thread(() -> {
-                int bytes_read;
-                try {
-                    while ((bytes_read = inFromClient.read(request)) != -1) {
-                        outToServer.write(request, 0, bytes_read);
-                        outToServer.flush();
-                    }
-                } catch (IOException e) {
-                }
-                try {
-                    outToServer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
+        try {
+            inFromServer = server.getInputStream();
+            outToServer = server.getOutputStream();
 
-            // делаем поток передачи данных SERVER -> CLIENT
-            int bytes_read;
-            try {
-                while ((bytes_read = inFromServer.read(reply)) != -1) {
-                    outToClient.write(reply, 0, bytes_read);
-                    outToClient.flush();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (server != null)
-                        server.close();
-                    if (client != null)
-                        client.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            outToClient.close();
-            sClient.close();
+            inFromClient = sClient.getInputStream();
+            outToClient = sClient.getOutputStream();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+        // делаем потоки передачи данных CLIENT -> SERVER и SERVER -> CLIENT
+        StreamSocketIO streamSocketClientServer = new StreamSocketIO(inFromClient,outToServer);
+        StreamSocketIO streamSocketServerClient = new StreamSocketIO(inFromServer,outToClient);
+
+        System.out.println("Start Threads");
+        streamSocketClientServer.start();
+        streamSocketServerClient.start();
+
+        // любой из потоков валится надо прекрывать лавочку
+        boolean status = true;
+        while (status) {
+            status = streamSocketClientServer.isAlive() && streamSocketServerClient.isAlive();
+        }
+
+        System.out.println("Stop Threads");
+        streamSocketClientServer.interrupt();
+        streamSocketServerClient.interrupt();
+
+
+    }
+
+    /**
+     * это мост соединящий входной и выходной поток
+     */
+    class StreamSocketIO extends Thread {
+
+        private final int BUF_SIZE = 4096;
+        final byte[] BUF = new byte[BUF_SIZE];
+
+        final InputStream inputStream;
+        final OutputStream outputStream;
+
+
+
+        StreamSocketIO(InputStream inputStream, OutputStream outputStream) {
+            this.inputStream = inputStream;
+            this.outputStream = outputStream;
+        }
+
+        @Override
+        public void run() {
+
+            int bytes_read;
+            try {
+                while ((bytes_read = inputStream.read(BUF)) != -1) {
+                    outputStream.write(BUF, 0, bytes_read);
+                    outputStream.flush();
+                    if(isInterrupted()) {
+                        break; // прерывание внешнее для закрытия потока
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
     }
 }
