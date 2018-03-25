@@ -109,6 +109,7 @@ public class ThreadProxy extends Thread {
             }
             try {
                 outputStream.close();
+                inputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
