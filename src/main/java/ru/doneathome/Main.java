@@ -27,9 +27,9 @@ import java.util.List;
 public class Main extends Application {
 
     private static ObservableList<Pipe> data = FXCollections.observableArrayList(
-            new Pipe("tort", "9510", "a@example.com", "2301"),
-            new Pipe("Doc", "2012", "b@example.com", "2301"),
-            new Pipe("Mok", "3456", "c@example.com", "2301")
+            new Pipe("tort", 9510, "a@example.com", 2301),
+            new Pipe("Doc", 2012, "b@example.com", 2301),
+            new Pipe("Mok", 3456, "c@example.com", 2301)
     );
 
 

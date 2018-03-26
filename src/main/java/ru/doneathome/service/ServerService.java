@@ -1,15 +1,15 @@
 package ru.doneathome.service;
 
-import com.sun.security.ntlm.Server;
+
 import ru.doneathome.exeptions.OpenServerException;
 
 import java.io.*;
 import java.net.*;
-import java.util.HashMap;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static java.lang.Thread.State.TERMINATED;
+
 
 public class ServerService {
 
