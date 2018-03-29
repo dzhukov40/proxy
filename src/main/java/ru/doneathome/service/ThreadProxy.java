@@ -5,8 +5,10 @@ import java.net.Socket;
 
 
 /**
- * Ограничение: сервер что-то возвращает назад как понять кому
- *   - разрешено только одно подключение!
+ * Этот класс получает локальный PORT, удаленный IP, удаленный PORT
+ * - связывает локальный и удаленный сокет запуском двух потоков на
+ *   взаимное чтение и запись.
+ * - (*) через такой проброс порта может общаться только одно приложение
  */
 public class ThreadProxy extends Thread {
 
@@ -52,7 +54,6 @@ public class ThreadProxy extends Thread {
             e.printStackTrace();
         }
 
-
         // делаем потоки передачи данных CLIENT -> SERVER и SERVER -> CLIENT
         StreamSocketIO streamSocketClientServer = new StreamSocketIO(inFromClient,outToServer);
         StreamSocketIO streamSocketServerClient = new StreamSocketIO(inFromServer,outToClient);
@@ -70,12 +71,11 @@ public class ThreadProxy extends Thread {
         System.out.println("Stop Threads");
         streamSocketClientServer.interrupt();
         streamSocketServerClient.interrupt();
-
-
     }
 
     /**
      * это мост соединящий входной и выходной поток
+     * - таких создастся 2 шт для одного [ ThreadProxy ]
      */
     class StreamSocketIO extends Thread {
 
@@ -84,7 +84,6 @@ public class ThreadProxy extends Thread {
 
         final InputStream inputStream;
         final OutputStream outputStream;
-
 
 
         StreamSocketIO(InputStream inputStream, OutputStream outputStream) {

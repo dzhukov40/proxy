@@ -22,7 +22,7 @@ public class ConfigurationFunctional {
 
     public Configuration readConfiguration (String fileName) throws IOException {
 
-        String filePath = System.getProperty("user.dir").concat(System.getProperty("path.separator")).concat(fileName);
+        String filePath = System.getProperty("user.dir").concat(System.getProperty("file.separator")).concat(fileName);
         byte[] jsonData = Files.readAllBytes(Paths.get(filePath));
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -31,7 +31,7 @@ public class ConfigurationFunctional {
 
     public void writeConfiguration (String fileName, Configuration configuration) throws IOException {
 
-        String filePath = System.getProperty("user.dir").concat(System.getProperty("path.separator")).concat(fileName);
+        String filePath = System.getProperty("user.dir").concat(System.getProperty("file.separator")).concat(fileName);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 
@@ -40,7 +40,7 @@ public class ConfigurationFunctional {
     }
 
     public void deleteConfiguration (String fileName) throws IOException {
-        String filePath = System.getProperty("user.dir").concat(System.getProperty("path.separator")).concat(fileName);
+        String filePath = System.getProperty("user.dir").concat(System.getProperty("file.separator")).concat(fileName);
         if (!new File(filePath).delete()) {
             throw new IOException("file " + filePath + " not deleted!");
         }

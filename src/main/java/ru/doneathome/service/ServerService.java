@@ -26,7 +26,8 @@ public class ServerService {
 
         // на виртуалке [192.168.56.101] запускаем сервер [ nc -k -l 4444 ]
         try {
-            serverService.startServer(3000, "192.168.56.101", 4444);
+            // serverService.startServer(3000, "192.168.56.101", 4444);
+            serverService.startServer(3000, "localhost", 6000);
         } catch (OpenServerException e) {
             e.printStackTrace();
         }
@@ -50,7 +51,7 @@ public class ServerService {
 
 
                 Thread.sleep(2000);
-                status = serverService.isAliveConnection(3000);
+               // status = serverService.isAliveConnection(3000);
                 System.out.println("isAliveConnection? " + status);
 
 

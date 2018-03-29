@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConfigurationFunctionalTest {
 
-
+    // Вспромогательный метод для создания экземпляра класса конфигурации
     Configuration createConfiguration() {
 
         Random random = new Random();
@@ -42,7 +42,7 @@ public class ConfigurationFunctionalTest {
         return new Configuration(profiles);
     }
 
-
+    // Тест создаст инстанс конфигурации, запишет его в файл, прочтет, проверит и удалит файл
     @Test
     void writeReadDeleteTest() {
 
