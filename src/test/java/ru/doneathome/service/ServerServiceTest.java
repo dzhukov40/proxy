@@ -24,6 +24,9 @@ public class ServerServiceTest {
         ServerService serverService = ServerService.getServerService();
 
         try {
+
+            Thread.sleep(SERVER_START_TIME);
+
             serverService.startServer(LOCAL_PORT, REMOTE_ADDRESS, REMOTE_PORT);
             Thread.sleep(SERVER_START_TIME);
             if (!serverService.getServerStatus(LOCAL_PORT).equals(ServerStatus.WAIT_CONNECTION)) {

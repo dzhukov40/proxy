@@ -46,13 +46,13 @@ public class ServerSupport extends Thread {
     @Override
     public void run() {
         while (true) {
-            try {
+/*            try {
                 Thread.sleep(VERIFY_PAUSE);
             } catch (InterruptedException e) {
-                //e.printStackTrace();
-            }
+                e.printStackTrace();
+            }*/
             verifyOpenServers();
-            if(interrupted()) {
+            if(isInterrupted()) {
                 break;
             }
         }

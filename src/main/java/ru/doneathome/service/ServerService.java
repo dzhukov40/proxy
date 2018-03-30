@@ -75,6 +75,7 @@ public class ServerService {
             synchronized (ServerService.class) {
                 if (serverService == null) {
                     serverService = new ServerService();
+                    serverSupport.startProcess();
                 }
             }
         }
@@ -95,19 +96,23 @@ public class ServerService {
         openServers.put(localPort, serverThread);
 
 
-        if (getServerStatus(localPort).equals(ServerStatus.WAIT_CONNECTION) && openServers.get(localPort) != null) {
+/*        if (getServerStatus(localPort).equals(ServerStatus.WAIT_CONNECTION) && openServers.get(localPort) != null) {
             serverSupport.startProcess();
-        }
+        }*/
     }
 
     //TODO: не работает закрытие сервера
     public void stopServer(int localPort) throws Exception {
         openServers.get(localPort).interrupt();
+
+        //serverSupport.stopProcess();
+        //serverSupport.interrupt();
+
+        // while (!getServerStatus(localPort).equals(ServerStatus.STOPPED));
+    }
+
+    public void stopServer() {
         serverSupport.stopProcess();
-
-        while (!getServerStatus(localPort).equals(ServerStatus.STOPPED));
-
-
     }
 
     public ServerStatus getServerStatus(int localPort) {
