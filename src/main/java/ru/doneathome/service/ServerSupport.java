@@ -4,8 +4,11 @@ import java.util.Map;
 
 public class ServerSupport extends Thread {
 
+    private final int VERIFY_PAUSE = 50;
+
     private static volatile ServerSupport serverSupport;
     private Map<Integer,ServerService.ServerThread> openServers;
+
 
     private ServerSupport(){}
 
@@ -43,6 +46,11 @@ public class ServerSupport extends Thread {
     @Override
     public void run() {
         while (true) {
+            try {
+                Thread.sleep(VERIFY_PAUSE);
+            } catch (InterruptedException e) {
+                //e.printStackTrace();
+            }
             verifyOpenServers();
             if(interrupted()) {
                 break;

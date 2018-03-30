@@ -33,7 +33,7 @@ public class ThreadProxy extends Thread {
         try {
             server = new Socket(SERVER_URL, SERVER_PORT);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Can not connect to " + SERVER_URL + ":" + SERVER_PORT,e);
         }
 
         // 4-е потока наши
@@ -104,7 +104,8 @@ public class ThreadProxy extends Thread {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
+                System.out.println("Connection was lost");
             }
             try {
                 outputStream.close();

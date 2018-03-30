@@ -3,9 +3,9 @@ package ru.doneathome.service;
 public enum ServerStatus {
 
     /**
-     * удаленный порт к которому хотим подлючиться не доступен
+     * Мы стартуем, это начальное состояние
      */
-    WAIT_REMOTE_PORT_AVAILABLE,
+    STARTING,
 
     /**
      * ожидаем подключение

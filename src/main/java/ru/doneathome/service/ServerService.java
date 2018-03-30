@@ -14,8 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ServerService {
 
 
-
-    private Map<Integer,ServerThread> openServers = new ConcurrentHashMap<>();
+    private static volatile ServerService serverService;
+    private static Map<Integer,ServerThread> openServers = new ConcurrentHashMap<>();
+    private static ServerSupport serverSupport = ServerSupport.getServerSupport(openServers);
 
 
 
@@ -33,17 +34,17 @@ public class ServerService {
         }
 
 
-        Boolean status = false;
+        ServerStatus status;
 
 
-/*        try {
+        try {
             Thread.sleep(10000);
             System.out.println("Stop Server: " + 3000);
             serverService.stopServer(3000);
 
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 
 
         while (true) {
@@ -51,7 +52,7 @@ public class ServerService {
 
 
                 Thread.sleep(2000);
-               // status = serverService.isAliveConnection(3000);
+                status = serverService.getServerStatus(3000);
                 System.out.println("isAliveConnection? " + status);
 
 
@@ -67,9 +68,23 @@ public class ServerService {
     }
 
 
+    private ServerService(){}
+
+    public static ServerService getServerService() {
+        if (serverService == null){
+            synchronized (ServerService.class) {
+                if (serverService == null) {
+                    serverService = new ServerService();
+                }
+            }
+        }
+        return serverService;
+    }
+
+
     public void startServer(int localPort, String remoteAddress, int remotePort) throws OpenServerException {
 
-        if(openServers.containsKey(localPort)){
+        if (openServers.containsKey(localPort)) {
             throw new OpenServerException("The server is already running");
         }
 
@@ -77,32 +92,46 @@ public class ServerService {
 
         serverThread.start();
 
-        openServers.put(localPort,serverThread);
+        openServers.put(localPort, serverThread);
 
-        ServerSupport.getServerSupport(openServers).startProcess();
 
+        if (getServerStatus(localPort).equals(ServerStatus.WAIT_CONNECTION) && openServers.get(localPort) != null) {
+            serverSupport.startProcess();
+        }
     }
 
     //TODO: не работает закрытие сервера
     public void stopServer(int localPort) throws Exception {
         openServers.get(localPort).interrupt();
+        serverSupport.stopProcess();
+
+        while (!getServerStatus(localPort).equals(ServerStatus.STOPPED));
+
+
     }
 
-    public Boolean isServerRun(int localPort) {
-        return openServers.get(localPort).isAlive();
+    public ServerStatus getServerStatus(int localPort) {
+        ServerThread serverThread = openServers.get(localPort);
+
+        if (serverThread == null || !serverThread.isAlive()) {
+            return ServerStatus.STOPPED;
+        } else if (serverThread.getStatusAliveConnection()) {
+            return ServerStatus.HAS_ACTIVE_CONNECTION;
+        } else {
+            return ServerStatus.WAIT_CONNECTION;
+        }
     }
 
-    public Boolean isAliveConnection(int localPort) {
-        return openServers.get(localPort).getConnectionStatus();
-    }
-
-
-
+    /**
+     * Это inner класс который отвечает за один проборос портов
+     */
     class ServerThread extends Thread {
 
         final int localPort;
         final String remoteAddress;
         final int remotePort;
+        final int CHECK_STATUS_PAUSE = 100;
+
         volatile Boolean statusAliveConnection = false;
 
         ServerThread(int localPort, String remoteAddress, int remotePort) {
@@ -111,7 +140,7 @@ public class ServerService {
             this.remotePort = remotePort;
         }
 
-        public Boolean getConnectionStatus(){
+        public Boolean getStatusAliveConnection(){
             return statusAliveConnection;
         }
 
@@ -123,28 +152,40 @@ public class ServerService {
             try {
                 System.out.println("Starting proxy for [" + localPort + "]->[" + remoteAddress + ":" + remotePort +"]");
                 server = new ServerSocket(localPort);
-                server.setSoTimeout(100);
+                server.setSoTimeout(CHECK_STATUS_PAUSE);
             } catch (Exception e) {
                 return;
             }
 
 
             while (true) {
+                Socket socket;
 
                 try {
                     if (!statusAliveConnection) {
-                        threadProxy = new ThreadProxy(server.accept(), remoteAddress, remotePort);
+                        socket = server.accept();
+                        if (socket != null) {
+                            threadProxy = new ThreadProxy(socket, remoteAddress, remotePort);
+                            socket = null;
+                        }
+
                     }
 
                     statusAliveConnection = threadProxy.isAlive();
 
-/*                    if(isInterrupted()){
-                        statusAliveConnection = false;
-                        threadProxy.interrupt();
-                    }*/
+                    if (isInterrupted()) {
+                        throw new SocketTimeoutException();
+                    }
 
                 } catch (SocketTimeoutException ignored){
-
+                    // Исключение как закончится тайм аут у "server.accept()" + попадаем при прерывании
+                    if(isInterrupted()){
+                        statusAliveConnection = false;
+                        if (threadProxy != null) {
+                            threadProxy.interrupt();
+                        }
+                        break;
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                     return;
