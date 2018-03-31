@@ -54,17 +54,24 @@ public class ServerService {
     }
 
     //TODO: не работает закрытие сервера
-    public void stopServer(int localPort) throws Exception {
-        openServers.get(localPort).interrupt();
+    public void stopServer(int localPort) {
+        ServerThread serverThread = openServers.get(localPort);
+
+        if (serverThread == null) {
+            return;
+        }
+
+        serverThread.interrupt();
+        openServers.remove(localPort);
 
         //serverSupport.stopProcess();
         //serverSupport.interrupt();
 
-        for (Map.Entry<Integer,ServerService.ServerThread> openServer : openServers.entrySet()) {
+/*        for (Map.Entry<Integer,ServerService.ServerThread> openServer : openServers.entrySet()) {
             if(openServer.getValue().getCanKill()) {
                 openServers.remove(openServer.getKey());
             }
-        }
+        }*/
 
         while (!getServerStatus(localPort).equals(ServerStatus.STOPPED) && openServers.get(localPort) == null);
     }
