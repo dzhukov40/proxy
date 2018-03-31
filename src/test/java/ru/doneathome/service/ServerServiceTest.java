@@ -5,6 +5,7 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -14,14 +15,16 @@ public class ServerServiceTest {
     final String REMOTE_ADDRESS = "localhost";
     final int REMOTE_PORT = 6000;
 
-    final int SERVER_START_TIME = 1000;
-    final int SERVER_STOP_TIME = 1000;
-    final int SERVER_PAUSE_TIME = 1000;
+    final int SERVER_START_TIME = 1;
+    final int SERVER_STOP_TIME = 1;
+    final int SERVER_PAUSE_TIME = 1;
+    final int SERVER_CLOSE_SOCKET_TIME = 10;
 
     @Test
-    @RepeatedTest(5)
+    //@RepeatedTest(5)
     public void startStopServer() {
         ServerService serverService = ServerService.getServerService();
+        ServerStatus serverStatus;
 
         try {
 
@@ -29,13 +32,15 @@ public class ServerServiceTest {
 
             serverService.startServer(LOCAL_PORT, REMOTE_ADDRESS, REMOTE_PORT);
             Thread.sleep(SERVER_START_TIME);
-            if (!serverService.getServerStatus(LOCAL_PORT).equals(ServerStatus.WAIT_CONNECTION)) {
-                throw new Exception("Server not started");
+            serverStatus = serverService.getServerStatus(LOCAL_PORT);
+            if (!serverStatus.equals(ServerStatus.WAIT_CONNECTION)) {
+                throw new Exception("Server not started. ServerStatus: " + serverStatus);
             }
             serverService.stopServer(LOCAL_PORT);
             Thread.sleep(SERVER_STOP_TIME);
-            if (!serverService.getServerStatus(LOCAL_PORT).equals(ServerStatus.STOPPED)) {
-                throw new Exception("Server not stopped");
+            serverStatus = serverService.getServerStatus(LOCAL_PORT);
+            if (!serverStatus.equals(ServerStatus.STOPPED)) {
+                throw new Exception("Server not stopped. ServerStatus: " + serverStatus);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,47 +55,61 @@ public class ServerServiceTest {
         ServerService serverService = ServerService.getServerService();
 
         ServerSocket serverSocket = null;
-        Socket socket;
+        Socket socket = null;
+
+        ServerStatus serverStatus;
 
         try {
             serverService.startServer(LOCAL_PORT, REMOTE_ADDRESS, REMOTE_PORT);
             Thread.sleep(SERVER_START_TIME);
-            if (!serverService.getServerStatus(LOCAL_PORT).equals(ServerStatus.WAIT_CONNECTION)) {
-                throw new Exception("Server not started");
+            serverStatus = serverService.getServerStatus(LOCAL_PORT);
+            if (!serverStatus.equals(ServerStatus.WAIT_CONNECTION)) {
+                throw new Exception("Server not started. ServerStatus: " + serverStatus);
             }
 
             serverSocket = new ServerSocket(REMOTE_PORT);
             socket = new Socket(REMOTE_ADDRESS, LOCAL_PORT);
             Thread.sleep(SERVER_PAUSE_TIME);
 
-            if (!serverService.getServerStatus(LOCAL_PORT).equals(ServerStatus.HAS_ACTIVE_CONNECTION)) {
-                throw new Exception("Server can not get connection");
+            serverStatus = serverService.getServerStatus(LOCAL_PORT);
+            if (!serverStatus.equals(ServerStatus.HAS_ACTIVE_CONNECTION)) {
+                throw new Exception("Server can not get connection. ServerStatus: " + serverStatus);
             }
 
             socket.close();
-            Thread.sleep(SERVER_PAUSE_TIME);
-            if (!serverService.getServerStatus(LOCAL_PORT).equals(ServerStatus.WAIT_CONNECTION)) {
-                throw new Exception("Server mast be in wait connection status");
+            Thread.sleep(SERVER_CLOSE_SOCKET_TIME);
+            serverStatus = serverService.getServerStatus(LOCAL_PORT);
+            if (!serverStatus.equals(ServerStatus.WAIT_CONNECTION)) {
+                throw new Exception("Server mast be in wait connection status. ServerStatus: " + serverStatus);
             }
 
             socket = new Socket(REMOTE_ADDRESS, LOCAL_PORT);
             Thread.sleep(SERVER_PAUSE_TIME);
 
-            if (!serverService.getServerStatus(LOCAL_PORT).equals(ServerStatus.HAS_ACTIVE_CONNECTION)) {
-                throw new Exception("Server can not get connection");
+            serverStatus = serverService.getServerStatus(LOCAL_PORT);
+            if (!serverStatus.equals(ServerStatus.HAS_ACTIVE_CONNECTION)) {
+                throw new Exception("Server can not get connection. ServerStatus: " + serverStatus);
             }
 
             serverService.stopServer(LOCAL_PORT);
             Thread.sleep(SERVER_STOP_TIME);
-            if (!serverService.getServerStatus(LOCAL_PORT).equals(ServerStatus.STOPPED)) {
-                throw new Exception("Server not stopped");
+            serverStatus = serverService.getServerStatus(LOCAL_PORT);
+            if (!serverStatus.equals(ServerStatus.STOPPED)) {
+                throw new Exception("Server not stopped. ServerStatus: " + serverStatus);
             }
 
-            serverSocket.close();
-            socket.close();
+
         } catch (Exception e) {
             e.printStackTrace();
             assert false;
+        } finally {
+            try {
+                serverSocket.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 }

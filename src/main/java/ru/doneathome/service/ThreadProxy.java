@@ -62,15 +62,16 @@ public class ThreadProxy extends Thread {
         streamSocketClientServer.start();
         streamSocketServerClient.start();
 
-        // любой из потоков валится надо прекрывать лавочку
+        // любой из потоков валится надо прекрывать лавочку или нас прервали
         boolean status = true;
         while (status) {
-            status = streamSocketClientServer.isAlive() && streamSocketServerClient.isAlive();
+            status = streamSocketClientServer.isAlive() && streamSocketServerClient.isAlive() && !isInterrupted();
         }
 
         System.out.println("Stop Threads");
         streamSocketClientServer.interrupt();
         streamSocketServerClient.interrupt();
+        while (streamSocketClientServer.isAlive() || streamSocketServerClient.isAlive());
     }
 
     /**

@@ -37,7 +37,7 @@ public class ServerSupport extends Thread {
 
     private void verifyOpenServers() {
         for (Map.Entry<Integer,ServerService.ServerThread> openServer : openServers.entrySet()) {
-            if(!openServer.getValue().isAlive()) {
+            if(openServer.getValue().getCanKill()) {
                 openServers.remove(openServer.getKey());
             }
         }

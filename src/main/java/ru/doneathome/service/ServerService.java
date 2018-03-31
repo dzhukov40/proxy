@@ -13,59 +13,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ServerService {
 
-
     private static volatile ServerService serverService;
     private static Map<Integer,ServerThread> openServers = new ConcurrentHashMap<>();
     private static ServerSupport serverSupport = ServerSupport.getServerSupport(openServers);
-
-
-
-
-    public static void main(String[] args) {
-
-        ServerService serverService = new ServerService();
-
-        // на виртуалке [192.168.56.101] запускаем сервер [ nc -k -l 4444 ]
-        try {
-            // serverService.startServer(3000, "192.168.56.101", 4444);
-            serverService.startServer(3000, "localhost", 6000);
-        } catch (OpenServerException e) {
-            e.printStackTrace();
-        }
-
-
-        ServerStatus status;
-
-
-        try {
-            Thread.sleep(10000);
-            System.out.println("Stop Server: " + 3000);
-            serverService.stopServer(3000);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        while (true) {
-            try {
-
-
-                Thread.sleep(2000);
-                status = serverService.getServerStatus(3000);
-                System.out.println("isAliveConnection? " + status);
-
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-           // } catch (SocketException e) {
-          //      e.printStackTrace();
-           // } catch (OpenServerException e) {
-           //     e.printStackTrace();
-            }
-        }
-
-    }
 
 
     private ServerService(){}
@@ -75,7 +25,7 @@ public class ServerService {
             synchronized (ServerService.class) {
                 if (serverService == null) {
                     serverService = new ServerService();
-                    serverSupport.startProcess();
+                    // serverSupport.startProcess();
                 }
             }
         }
@@ -96,6 +46,8 @@ public class ServerService {
         openServers.put(localPort, serverThread);
 
 
+        while (getServerStatus(localPort).equals(ServerStatus.STOPPED));
+
 /*        if (getServerStatus(localPort).equals(ServerStatus.WAIT_CONNECTION) && openServers.get(localPort) != null) {
             serverSupport.startProcess();
         }*/
@@ -108,11 +60,13 @@ public class ServerService {
         //serverSupport.stopProcess();
         //serverSupport.interrupt();
 
-        // while (!getServerStatus(localPort).equals(ServerStatus.STOPPED));
-    }
+        for (Map.Entry<Integer,ServerService.ServerThread> openServer : openServers.entrySet()) {
+            if(openServer.getValue().getCanKill()) {
+                openServers.remove(openServer.getKey());
+            }
+        }
 
-    public void stopServer() {
-        serverSupport.stopProcess();
+        while (!getServerStatus(localPort).equals(ServerStatus.STOPPED) && openServers.get(localPort) == null);
     }
 
     public ServerStatus getServerStatus(int localPort) {
@@ -135,9 +89,12 @@ public class ServerService {
         final int localPort;
         final String remoteAddress;
         final int remotePort;
-        final int CHECK_STATUS_PAUSE = 100;
+        final int CHECK_STATUS_PAUSE = 1;
+        final int WAIT_CLOSE_PAUSE = 100;
 
         volatile Boolean statusAliveConnection = false;
+        volatile Boolean canKill = false;
+
 
         ServerThread(int localPort, String remoteAddress, int remotePort) {
             this.localPort = localPort;
@@ -145,9 +102,15 @@ public class ServerService {
             this.remotePort = remotePort;
         }
 
-        public Boolean getStatusAliveConnection(){
+        public Boolean getStatusAliveConnection() {
             return statusAliveConnection;
         }
+
+        public Boolean getCanKill() {
+            return canKill;
+        }
+
+
 
         @Override
         public void run() {
@@ -159,6 +122,7 @@ public class ServerService {
                 server = new ServerSocket(localPort);
                 server.setSoTimeout(CHECK_STATUS_PAUSE);
             } catch (Exception e) {
+                canKill = true;
                 return;
             }
 
@@ -184,22 +148,26 @@ public class ServerService {
 
                 } catch (SocketTimeoutException ignored){
                     // Исключение как закончится тайм аут у "server.accept()" + попадаем при прерывании
-                    if(isInterrupted()){
-                        statusAliveConnection = false;
-                        if (threadProxy != null) {
-                            threadProxy.interrupt();
-                        }
+                    if(isInterrupted()) {
                         break;
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return;
+                } catch (Exception e) {
+
+                    break;
                 }
             }
 
 
+            try {
+                server.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-
+            if (threadProxy != null) {
+                threadProxy.interrupt();
+            }
+            canKill = true;
         }
 
     }
