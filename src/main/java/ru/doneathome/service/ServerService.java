@@ -15,7 +15,7 @@ public class ServerService {
 
     private static volatile ServerService serverService;
     private static Map<Integer,ServerThread> openServers = new ConcurrentHashMap<>();
-    private static ServerSupport serverSupport = ServerSupport.getServerSupport(openServers);
+    // private static ServerSupport serverSupport = ServerSupport.getServerSupport(openServers);
 
 
     private ServerService(){}
@@ -25,7 +25,6 @@ public class ServerService {
             synchronized (ServerService.class) {
                 if (serverService == null) {
                     serverService = new ServerService();
-                    // serverSupport.startProcess();
                 }
             }
         }
@@ -34,44 +33,24 @@ public class ServerService {
 
 
     public void startServer(int localPort, String remoteAddress, int remotePort) throws OpenServerException {
-
-        if (openServers.containsKey(localPort)) {
+        if (openServers.containsKey(localPort) && openServers.get(localPort).isAlive()) {
             throw new OpenServerException("The server is already running");
         }
 
         ServerThread serverThread = new ServerThread(localPort, remoteAddress, remotePort);
-
         serverThread.start();
-
         openServers.put(localPort, serverThread);
 
-
         while (getServerStatus(localPort).equals(ServerStatus.STOPPED));
-
-/*        if (getServerStatus(localPort).equals(ServerStatus.WAIT_CONNECTION) && openServers.get(localPort) != null) {
-            serverSupport.startProcess();
-        }*/
     }
 
-    //TODO: не работает закрытие сервера
     public void stopServer(int localPort) {
         ServerThread serverThread = openServers.get(localPort);
-
         if (serverThread == null) {
             return;
         }
-
         serverThread.interrupt();
         openServers.remove(localPort);
-
-        //serverSupport.stopProcess();
-        //serverSupport.interrupt();
-
-/*        for (Map.Entry<Integer,ServerService.ServerThread> openServer : openServers.entrySet()) {
-            if(openServer.getValue().getCanKill()) {
-                openServers.remove(openServer.getKey());
-            }
-        }*/
 
         while (!getServerStatus(localPort).equals(ServerStatus.STOPPED) && openServers.get(localPort) == null);
     }
@@ -97,10 +76,8 @@ public class ServerService {
         final String remoteAddress;
         final int remotePort;
         final int CHECK_STATUS_PAUSE = 1;
-        final int WAIT_CLOSE_PAUSE = 100;
 
         volatile Boolean statusAliveConnection = false;
-        volatile Boolean canKill = false;
 
 
         ServerThread(int localPort, String remoteAddress, int remotePort) {
@@ -113,11 +90,6 @@ public class ServerService {
             return statusAliveConnection;
         }
 
-        public Boolean getCanKill() {
-            return canKill;
-        }
-
-
 
         @Override
         public void run() {
@@ -129,14 +101,11 @@ public class ServerService {
                 server = new ServerSocket(localPort);
                 server.setSoTimeout(CHECK_STATUS_PAUSE);
             } catch (Exception e) {
-                canKill = true;
                 return;
             }
 
-
             while (true) {
                 Socket socket;
-
                 try {
                     if (!statusAliveConnection) {
                         socket = server.accept();
@@ -144,7 +113,6 @@ public class ServerService {
                             threadProxy = new ThreadProxy(socket, remoteAddress, remotePort);
                             socket = null;
                         }
-
                     }
 
                     statusAliveConnection = threadProxy.isAlive();
@@ -159,12 +127,11 @@ public class ServerService {
                         break;
                     }
                 } catch (Exception e) {
-
                     break;
                 }
             }
 
-
+            // что - то отвалилось, вырубаем поток, связывающий два сокета
             try {
                 server.close();
             } catch (IOException e) {
@@ -173,12 +140,10 @@ public class ServerService {
 
             if (threadProxy != null) {
                 threadProxy.interrupt();
+                while (threadProxy.isAlive());
             }
-            canKill = true;
         }
-
     }
-
 
 }
 

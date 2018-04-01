@@ -8,6 +8,8 @@ import java.net.Socket;
  * Этот класс получает локальный PORT, удаленный IP, удаленный PORT
  * - связывает локальный и удаленный сокет запуском двух потоков на
  *   взаимное чтение и запись.
+ * Этот класс мониторит состояние двух созданных потоков и если что - то
+ * с ними не так, поток прерывает созданные потоки и завершается сам.
  * - (*) через такой проброс порта может общаться только одно приложение
  */
 public class ThreadProxy extends Thread {
@@ -27,9 +29,7 @@ public class ThreadProxy extends Thread {
 
     @Override
     public void run() {
-
         Socket server = null;
-
         try {
             server = new Socket(SERVER_URL, SERVER_PORT);
         } catch (IOException e) {
@@ -105,7 +105,6 @@ public class ThreadProxy extends Thread {
                     }
                 }
             } catch (IOException e) {
-                // e.printStackTrace();
                 System.out.println("Connection was lost");
             }
             try {
