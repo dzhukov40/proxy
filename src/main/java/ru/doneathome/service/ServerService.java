@@ -6,9 +6,12 @@ import ru.doneathome.exeptions.OpenServerException;
 import java.io.*;
 import java.net.*;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.stream.Collectors;
 
 
 public class ServerService {
@@ -28,13 +31,13 @@ public class ServerService {
                 }
             }
         }
-        serverService.verifyOpenServers();
+        // serverService.verifyOpenServers();
         return serverService;
     }
 
 
     public void startServer(int localPort, String remoteAddress, int remotePort) throws OpenServerException {
-        verifyOpenServers();
+        //verifyOpenServers();
         if (openServers.containsKey(localPort)) {
             throw new OpenServerException("The server is already running");
         }
@@ -47,7 +50,7 @@ public class ServerService {
     }
 
     public void stopServer(int localPort) {
-        verifyOpenServers();
+        //verifyOpenServers();
         ServerThread serverThread = openServers.get(localPort);
         if (serverThread == null) {
             return;
@@ -70,13 +73,26 @@ public class ServerService {
         }
     }
 
-    private void verifyOpenServers() {
-        for (Map.Entry<Integer,ServerService.ServerThread> openServer : openServers.entrySet()) {
-            if(!openServer.getValue().isAlive()) {
-                openServers.remove(openServer.getKey());
+    public void verifyOpenServers() {
+        openServers.forEach((key, value) -> {
+            if (!value.isAlive())
+                openServers.remove(key);
+        });
+    }
+
+    public Set<ServerThread> getOpenServers() {
+        Set<ServerThread> openServerThreads = new HashSet<>();
+
+        for (ServerThread serverThread : openServerThreads) {
+            if (serverThread.isAlive()) {
+                openServerThreads.add(serverThread);
             }
         }
+
+        return openServerThreads;
     }
+
+
 
     /**
      * Это inner класс который отвечает за один проборос портов
