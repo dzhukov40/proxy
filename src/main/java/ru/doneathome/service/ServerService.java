@@ -28,12 +28,14 @@ public class ServerService {
                 }
             }
         }
+        serverService.verifyOpenServers();
         return serverService;
     }
 
 
     public void startServer(int localPort, String remoteAddress, int remotePort) throws OpenServerException {
-        if (openServers.containsKey(localPort) && openServers.get(localPort).isAlive()) {
+        verifyOpenServers();
+        if (openServers.containsKey(localPort)) {
             throw new OpenServerException("The server is already running");
         }
 
@@ -45,6 +47,7 @@ public class ServerService {
     }
 
     public void stopServer(int localPort) {
+        verifyOpenServers();
         ServerThread serverThread = openServers.get(localPort);
         if (serverThread == null) {
             return;
@@ -64,6 +67,14 @@ public class ServerService {
             return ServerStatus.HAS_ACTIVE_CONNECTION;
         } else {
             return ServerStatus.WAIT_CONNECTION;
+        }
+    }
+
+    private void verifyOpenServers() {
+        for (Map.Entry<Integer,ServerService.ServerThread> openServer : openServers.entrySet()) {
+            if(!openServer.getValue().isAlive()) {
+                openServers.remove(openServer.getKey());
+            }
         }
     }
 
