@@ -1,17 +1,16 @@
 package ru.doneathome.service;
 
 
+import ru.doneathome.dto.ServerInfoDTO;
 import ru.doneathome.exeptions.OpenServerException;
 
 import java.io.*;
 import java.net.*;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 
 public class ServerService {
@@ -31,15 +30,16 @@ public class ServerService {
                 }
             }
         }
-        // serverService.verifyOpenServers();
         return serverService;
     }
 
 
     public void startServer(int localPort, String remoteAddress, int remotePort) throws OpenServerException {
-        //verifyOpenServers();
         if (openServers.containsKey(localPort)) {
-            throw new OpenServerException("The server is already running");
+            verifyOpenServers();
+            if (openServers.containsKey(localPort)) {
+                throw new OpenServerException("The server is already running");
+            }
         }
 
         ServerThread serverThread = new ServerThread(localPort, remoteAddress, remotePort);
@@ -50,7 +50,6 @@ public class ServerService {
     }
 
     public void stopServer(int localPort) {
-        //verifyOpenServers();
         ServerThread serverThread = openServers.get(localPort);
         if (serverThread == null) {
             return;
@@ -80,16 +79,20 @@ public class ServerService {
         });
     }
 
-    public Set<ServerThread> getOpenServers() {
-        Set<ServerThread> openServerThreads = new HashSet<>();
+    public Set<ServerInfoDTO> getOpenServers() {
+        Set<ServerInfoDTO> serverInfoDTOSet = new HashSet<>();
 
-        for (ServerThread serverThread : openServerThreads) {
-            if (serverThread.isAlive()) {
-                openServerThreads.add(serverThread);
+        openServers.forEach( (k,v)->{
+            if (v.isAlive()) {
+                serverInfoDTOSet.add(new ServerInfoDTO(v.localPort, v.remoteAddress, v.remotePort));
             }
-        }
+        } );
 
-        return openServerThreads;
+        return serverInfoDTOSet;
+    }
+
+    public void closeAllServers() {
+        openServers.forEach( (k,v)-> stopServer(v.localPort) );
     }
 
 

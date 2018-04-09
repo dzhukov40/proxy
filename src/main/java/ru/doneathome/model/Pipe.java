@@ -12,6 +12,13 @@ public class Pipe {
 
     public Pipe(){}
 
+    public Pipe(int localhostPort, String remoteIP, int remotePort) {
+        this.name = "localhost:" + Integer.toString(localhostPort) + "->" + remoteIP + ":" + remotePort;
+        this.localhostPort = localhostPort;
+        this.remoteIP = remoteIP;
+        this.remotePort = remotePort;
+    }
+
     public Pipe(String name, int localhostPort, String remoteIP, int remotePort) {
         this.name = name;
         this.localhostPort = localhostPort;

@@ -3,6 +3,7 @@ package ru.doneathome.service;
 
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import ru.doneathome.exeptions.OpenServerException;
 
 
 import java.io.IOException;
@@ -17,10 +18,10 @@ public class ServerServiceTest {
     final int REMOTE_PORT = 6000;
 
     final int SERVER_START_TIME = 1;
-    final int REMOTE_SERVER_START_TIME = 20;
+    final int REMOTE_SERVER_START_TIME = 80;
     final int SERVER_STOP_TIME = 1;
-    final int SERVER_PAUSE_TIME = 20;
-    final int SERVER_CLOSE_SOCKET_TIME = 20;
+    final int SERVER_PAUSE_TIME = 80;
+    final int SERVER_CLOSE_SOCKET_TIME = 80;
 
     final int COUNT = 5;
 
@@ -35,8 +36,18 @@ public class ServerServiceTest {
         startStopServer();
     }
 
+    @Test
+    public  void oneStartStopConnectionServer() {
+        startStopConnectionServer();
+    }
     @RepeatedTest(5)
-    public void StartStopConnectionServer() {
+    public void repeatStartStopConnectionServer() {
+        startStopConnectionServer();
+    }
+
+
+
+    public void startStopConnectionServer() {
 
         ServerService serverService = ServerService.getServerService();
 

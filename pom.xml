@@ -18,6 +18,7 @@
         <junit.jupiter.version>5.1.0</junit.jupiter.version>
         <junit.vintage.version>5.1.0</junit.vintage.version>
         <junit.platform.version>1.1.0</junit.platform.version>
+        <spring.boot>2.0.1.RELEASE</spring.boot>
 
     </properties>
 
@@ -55,6 +56,14 @@
             <scope>test</scope>
         </dependency>
 
+
+
+        <!-- Sping -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot}</version>
+        </dependency>
 
 
 
