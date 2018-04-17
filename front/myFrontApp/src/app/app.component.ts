@@ -1,18 +1,22 @@
 import { Component } from '@angular/core';
+import { PipesService } from './services/pipes.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers: [PipesService]
 })
 export class AppComponent {
   title = 'Poxy';
 
-  pipes = [
-    {name: 'test1', localPort: '1010'},
-    {name: 'test2', localPort: '1020'},
-    {name: 'test3', localPort: '1030'}
-  ]
+  pipes = [];
+
+  constructor(private pipeService: PipesService) {}
+
+  ngOnInit() {
+    this.pipeService.getPipes().subscribe( pipes => { console.log })
+  }
 
 
 }

@@ -27,6 +27,9 @@
   <tr *ngFor="let pipe of pipes">
     <th>{{ pipe.name }}</th>
     <th>{{ pipe.localPort }}</th>
+    <th>{{ pipe.remoteIp }}</th>
+    <th>{{ pipe.remotePort }}</th>
+    <th><button type="button" (click)="loadTask(client.id)">удалить</button></th>
   </tr>
   <tr>
     <th><button>Добавить новый тунель</button></th>
