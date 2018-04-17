@@ -6,7 +6,11 @@
 
     <groupId>ru.doneathome</groupId>
     <artifactId>proxy</artifactId>
+    <packaging>pom</packaging>
     <version>1.0.0</version>
+    <modules>
+        <module>front</module>
+    </modules>
 
 
     <properties>
