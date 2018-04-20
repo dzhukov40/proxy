@@ -113,3 +113,7 @@
   - (*) переключаемся на [Spring boot]
   - бах и у нас сервачек [ https://projects.spring.io/spring-boot/ ]
 
+7) на фронт прикрутили Ангулярчик
+  - создали модуль [ ng new <имя проекта> ] (*) перед этим установили [ nvm, angular/cli ]
+  - компилим [ ng build ], запускаем [ ng serve ] -> [ http://localhost:4200/ ]
+

@@ -1,12 +1,28 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
+<div style="text-align:left">
   <h1>
     {{ title }}
   </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
+
+  <div class="select-profile">
+    Выбрать профиль:
+    <select name="cars" [(ngModel)]="car">
+      <option value="volvo">Volvo</option>
+      <option value="saab">Saab</option>
+      <option value="fiat">Fiat</option>
+      <option value="audi">Audi</option>
+    </select>
+    <button type="button" (click)="loadTask(client.id)">удалить</button>
+    <button type="button" (click)="loadTask(client.id)">сохранить изменения</button>
+    <button type="button" (click)="loadTask(client.id)">создать новый</button>
+  </div>
+
+  <div class="start-stop-buttons">
+    <button class="start-stop-button" type="button" (click)="startProxy()">Старт</button>
+  </div>
 
 
+<div class="separation"></div>
 
 
 <table style="width:100%">
@@ -24,16 +40,27 @@
     <th>3000</th>
     <th><button>удалить</button></th>
   </tr>
-  <tr *ngFor="let pipe of pipes">
+<!--  <tr *ngFor="let pipe of pipes">
     <th>{{ pipe.name }}</th>
     <th>{{ pipe.localPort }}</th>
     <th>{{ pipe.remoteIp }}</th>
     <th>{{ pipe.remotePort }}</th>
     <th><button type="button" (click)="loadTask(client.id)">удалить</button></th>
+  </tr>-->
+
+  <tr *ngFor="let pipe of pipes">
+    <th><input [(ngModel)]="pipe.name" placeholder="name"></th>
+    <th><input [(ngModel)]="pipe.localPort" placeholder="name"></th>
+    <th><input [(ngModel)]="pipe.remoteIp" placeholder="name"></th>
+    <th><input [(ngModel)]="pipe.remotePort" placeholder="name"></th>
+    <th><button type="button" (click)="loadTask(client.id)">удалить</button></th>
   </tr>
+
   <tr>
-    <th><button>Добавить новый тунель</button></th>
+    <th><button>Добавить новый тунель {{color}}</button></th>
   </tr>
 
 </table>
+
+
 
