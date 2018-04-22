@@ -21,6 +21,7 @@
     <button class="start-stop-button" type="button" (click)="startProxy()">Старт</button>
   </div>
 
+</div>
 
 <div class="separation"></div>
 
@@ -64,3 +65,8 @@
 
 
 
+  <select #selectElem (change)="setProfile(value)">
+    <option *ngFor="let profile of profiles" [value]="profile">
+      {{profile}}
+    </option>
+  </select>

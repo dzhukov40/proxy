@@ -16,6 +16,7 @@ export class AppComponent {
   car = 'volvo';
 
   configuration: Configuration;
+  //profileList: string[];
 
 
   name= '';
@@ -28,30 +29,35 @@ export class AppComponent {
 
   constructor(private configurationService: ConfigurationService) {}
 
-/*
-  pipes = [];
-ngOnInit() {
-    this.pipeService.getPipes().subscribe( pipes => { console.log })
-  }*/
-
-
-
-  ngOnInit() {
-      this.configurationService.getConfiguration().subscribe( (data:Configuration) => console.log );
-    }
-
-
 
 
     startProxy(): void {
-      this.configurationService.getConfiguration().subscribe( (data:Configuration) => this.configuration=data );
+      //this.configuration=this.configurationService.getConfiguration();
+      //console.log(this.configuration);
 
-      console.log(this.configuration);
+      //this.profileList = this.configurationService.getProfileList();
+      //console.log(this.profileList);
 
+      this.profiles = this.configurationService.getProfileList();
+      console.log("ngOnInit: " + this.profiles);
     }
 
 
+  profiles: string[] = [];
 
+  curProfile: string = this.profiles[0];
+
+
+  setProfile(profile: string): void {
+    //console.log(profile);
+    this.curProfile = this.profiles.find(value => value === profile);
+  }
+
+
+  ngOnInit() {
+    this.profiles = this.configurationService.getProfileList();
+    console.log("ngOnInit: " + this.profiles);
+  }
 
 
 

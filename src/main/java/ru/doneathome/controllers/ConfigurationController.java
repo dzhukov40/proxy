@@ -1,5 +1,6 @@
 package ru.doneathome.controllers;
 
+import com.sun.xml.internal.bind.v2.util.CollisionCheckStack;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.doneathome.model.Configuration;
@@ -9,15 +10,18 @@ import ru.doneathome.model.Profile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+
+import static ru.doneathome.controllers.ConfigurationRestURI.CONFIGURATION;
+import static ru.doneathome.controllers.ConfigurationRestURI.PROFILE_LIST;
 
 @RestController
 @CrossOrigin(origins = "*") //разрешает делать запрос с других доменов
-@RequestMapping("/configuration")
 public class ConfigurationController {
 
-    @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody
-    Configuration getConfiguration() {
+
+    // Вспромогательный метод для создания экземпляра класса конфигурации
+    Configuration createConfiguration() {
 
         Random random = new Random();
 
@@ -42,5 +46,19 @@ public class ConfigurationController {
 
         return new Configuration(profiles);
     }
+
+    @RequestMapping(value = CONFIGURATION, method = RequestMethod.GET)
+    public @ResponseBody
+    Configuration getConfiguration() {
+        return createConfiguration();
+    }
+
+
+    @RequestMapping(value = PROFILE_LIST, method = RequestMethod.GET)
+    public @ResponseBody
+    List<String> getProfileList() {
+        return createConfiguration().getProfiles().stream().map(Profile::getName).collect(Collectors.toList());
+    }
+
 
 }
