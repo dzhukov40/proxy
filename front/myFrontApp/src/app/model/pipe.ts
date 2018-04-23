@@ -1,4 +1,4 @@
-export class Pipe {
+export interface Pipe {
 
   name: string;
   localhostPort: number;

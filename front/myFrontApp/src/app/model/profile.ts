@@ -1,9 +1,8 @@
 import {Pipe} from "./pipe";
 
-export class Profile {
+export interface Profile {
 
   name: string;
-
-  pipes: [Pipe];
+  pipes: Pipe[];
 
 }

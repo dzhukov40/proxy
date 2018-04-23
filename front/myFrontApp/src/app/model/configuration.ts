@@ -1,6 +1,6 @@
 import {Profile} from "./profile";
 
-export class Configuration {
+export interface Configuration {
 
-  profiles: [Profile];
+  profiles: Profile[];
 }

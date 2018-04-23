@@ -49,10 +49,11 @@
     <th><button type="button" (click)="loadTask(client.id)">удалить</button></th>
   </tr>-->
 
-  <tr *ngFor="let pipe of pipes">
+  <!-- [curProfile?.pipes] -> [?] синтаксис проверки на "null" -->
+  <tr *ngFor="let pipe of curProfile?.pipes">
     <th><input [(ngModel)]="pipe.name" placeholder="name"></th>
-    <th><input [(ngModel)]="pipe.localPort" placeholder="name"></th>
-    <th><input [(ngModel)]="pipe.remoteIp" placeholder="name"></th>
+    <th><input [(ngModel)]="pipe.localhostPort" placeholder="name"></th>
+    <th><input [(ngModel)]="pipe.remoteIP" placeholder="name"></th>
     <th><input [(ngModel)]="pipe.remotePort" placeholder="name"></th>
     <th><button type="button" (click)="loadTask(client.id)">удалить</button></th>
   </tr>
@@ -66,7 +67,7 @@
 
 
   <select #selectElem (change)="setProfile(value)">
-    <option *ngFor="let profile of profiles" [value]="profile">
+    <option *ngFor="let profile of profileList" [value]="profile">
       {{profile}}
     </option>
   </select>
