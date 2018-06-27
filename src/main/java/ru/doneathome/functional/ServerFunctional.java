@@ -1,20 +1,24 @@
 package ru.doneathome.functional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import ru.doneathome.exeptions.OpenServerException;
-import ru.doneathome.model.Configuration;
 import ru.doneathome.model.Pipe;
 import ru.doneathome.model.Profile;
-import ru.doneathome.service.ServerService;
+import ru.doneathome.service.ServerServiceAPI;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static ru.doneathome.service.ServerService.getServerService;
 
-public class ServerFunctional {
+@Scope(value = "singleton")
+@Component
+public class ServerFunctional implements ServerFunctionalAPI {
 
-    private ServerService serverService = getServerService();
+    @Autowired
+    private ServerServiceAPI serverService;
 
 
     public void openPipe(Pipe pipe) throws OpenServerException {

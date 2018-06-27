@@ -1,0 +1,128 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<html>
+<body>
+<div id="header">
+    <form method="POST" id="nameform" action="javascript:void(null);" onsubmit="login()">
+        <input id="name" name="name" value="" style="font-size:medium" type="text">
+        <input value="Login" style="font-size:large" type="submit">
+    </form>
+    <button value="logout" style="font-size:large" onclick="logout()">logout</button> <!-- -->
+    <button value="test" style="font-size:large" onclick="test()">logout</button> <!-- -->
+
+</div>
+
+<div id="body">
+    <div id="history" class="chat form"></div>
+</div>
+<div id="footer">
+    <form method="POST" id="msgform" action="javascript:void(null);" onsubmit="say()">
+        <input id="msg" name="msg" class="msginput" value="" style="font-size:medium" type="text">
+        <input value="Send" class="sendbutton" style="font-size:large" type="submit">
+    </form>
+</div>
+</body>
+</html>
+
+<!-- это подключение [ajax] -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+
+<!-- пару моментов про код JavaScript
+
+$.ajax - это использование [ajax]
+  - $.ajax( url ).done( func ) в метод [done] передаем ф-ию колбек, в которую прийдет ответ
+  - $.ajax( url ).fail( func ) в метод [fail] передаем ф-ию колбек, в которую попадем при ошибке
+-->
+
+
+<script>
+    var host = "localhost";
+    var port = 8080;
+
+
+    function loadHistory() {
+        <!-- это описание URL запроса -->
+        var settings = {
+            "crossDomain": true,
+            "url": "http://" + host + ":" + port + "/chat/chat",
+            "method": "GET",
+        }
+
+        $.ajax(settings).done(function (response) {
+            $("#history").html(response.replace(/\n/g, "<br />"))
+            $("#history").scrollTop($("#history")[0].scrollHeight);
+        }).fail(function (jqXHR, textStatus) {
+            console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
+        });
+    }
+
+    function say() {
+        var msg = $('#msgform').serialize();
+        var name = $('#nameform').serialize();
+
+        var settings = {
+            "method": "POST",
+            "crossDomain": true,
+            "url": "http://" + host + ":" + port + "/chat/say",
+            "data": name + "&" + msg
+        };
+
+        $.ajax(settings).done(function (response) {
+            $('#msgform').trigger("reset");
+            loadHistory();
+        }).fail(function (jqXHR, textStatus) {
+            alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
+            console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
+        });
+    }
+
+    function login() {
+        var name = $('#nameform').serialize();
+
+        var settings = {
+            "method": "POST",
+            "crossDomain": true,
+            "url": "http://" + host + ":" + port + "/chat/login",
+            "data": name
+        };
+
+        $.ajax(settings).done(function (response) {
+            loadHistory();
+        }).fail(function (jqXHR, textStatus) {
+            alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
+            console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
+        });
+    }
+
+    function logout() {
+        var name = $('#nameform').serialize();
+
+        var settings = {
+            "method": "POST",
+            "crossDomain": true,
+            "url": "http://" + host + ":" + port + "/chat/logout",
+            "data": name
+        };
+
+        $.ajax(settings).done(function (response) {
+            loadHistory();
+        }).fail(function (jqXHR, textStatus) {
+            alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
+            console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
+        });
+    }
+
+    <!-- тестовая ф-ия, нет запроса на Бек -->
+    function test() {
+
+        $("#history").html("<br>приветики");
+       // $("#history").scrollTop($("#history")[0].scrollHeight);
+    }
+
+
+
+    loadHistory();
+    setInterval(loadHistory, 10000);
+</script>

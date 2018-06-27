@@ -1,7 +1,11 @@
 package ru.doneathome.service;
 
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.doneathome.dto.ServerInfoDTO;
+import ru.doneathome.enums.ServerStatus;
 import ru.doneathome.exeptions.OpenServerException;
 
 import java.io.*;
@@ -12,26 +16,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Scope(value = "singleton")
+@Component
+public class ServerService implements ServerServiceAPI {
 
-public class ServerService {
-
-    private static volatile ServerService serverService;
     private static Map<Integer,ServerThread> openServers = new ConcurrentHashMap<>();
     // private static ServerSupport serverSupport = ServerSupport.getServerSupport(openServers);
-
-
-    private ServerService(){}
-
-    public static ServerService getServerService() {
-        if (serverService == null){
-            synchronized (ServerService.class) {
-                if (serverService == null) {
-                    serverService = new ServerService();
-                }
-            }
-        }
-        return serverService;
-    }
 
 
     public void startServer(int localPort, String remoteAddress, int remotePort) throws OpenServerException {

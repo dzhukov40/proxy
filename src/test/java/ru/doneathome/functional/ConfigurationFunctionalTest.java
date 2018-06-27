@@ -23,14 +23,10 @@ public class ConfigurationFunctionalTest {
         List<Pipe> pipes1 = new ArrayList<>();
         pipes1.add(new Pipe("1_first", random.nextInt(), "localhost", random.nextInt()));
         pipes1.add(new Pipe("1_two", random.nextInt(), "localhost", random.nextInt()));
-        pipes1.add(new Pipe("1_three", random.nextInt(), "localhost", random.nextInt()));
-        pipes1.add(new Pipe("1_four", random.nextInt(), "localhost", random.nextInt()));
 
         List<Pipe> pipes2 = new ArrayList<>();
         pipes2.add(new Pipe("2_first", random.nextInt(), "localhost", random.nextInt()));
         pipes2.add(new Pipe("2_two", random.nextInt(), "localhost", random.nextInt()));
-        pipes2.add(new Pipe("2_three", random.nextInt(), "localhost", random.nextInt()));
-        pipes2.add(new Pipe("2_four", random.nextInt(), "localhost", random.nextInt()));
 
         Profile profile1 = new Profile("tort", pipes1);
         Profile profile2 = new Profile("Djo",pipes2);

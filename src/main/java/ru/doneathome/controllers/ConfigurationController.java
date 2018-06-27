@@ -1,7 +1,5 @@
 package ru.doneathome.controllers;
 
-import com.sun.xml.internal.bind.v2.util.CollisionCheckStack;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.doneathome.model.Configuration;
 import ru.doneathome.model.Pipe;

@@ -1,4 +1,4 @@
-package ru.doneathome.service;
+package ru.doneathome.enums;
 
 public enum ServerStatus {
 

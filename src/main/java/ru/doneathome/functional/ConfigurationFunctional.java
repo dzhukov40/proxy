@@ -11,6 +11,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import ru.doneathome.model.Configuration;
 import ru.doneathome.model.Pipe;
 
@@ -18,7 +20,9 @@ import ru.doneathome.model.Pipe;
  * читаем/записываем конфигурацию в файл
  * - формат JSON
  */
-public class ConfigurationFunctional {
+@Scope(value = "singleton")
+@Component
+public class ConfigurationFunctional implements ConfigurationFunctionalAPI {
 
     public Configuration readConfiguration (String fileName) throws IOException {
 
@@ -46,7 +50,5 @@ public class ConfigurationFunctional {
         }
 
     }
-
-
 
 }
