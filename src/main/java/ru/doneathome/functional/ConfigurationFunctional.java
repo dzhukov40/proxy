@@ -11,6 +11,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.doneathome.model.Configuration;
@@ -23,6 +25,7 @@ import ru.doneathome.model.Pipe;
 @Scope(value = "singleton")
 @Component
 public class ConfigurationFunctional implements ConfigurationFunctionalAPI {
+    private static final Logger log = LoggerFactory.getLogger(ConfigurationFunctional.class);
 
     public Configuration readConfiguration (String fileName) throws IOException {
 

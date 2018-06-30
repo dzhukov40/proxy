@@ -1,8 +1,11 @@
 package ru.doneathome.functional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import ru.doneathome.controllers.PipeController;
 import ru.doneathome.exeptions.OpenServerException;
 import ru.doneathome.model.Pipe;
 import ru.doneathome.model.Profile;
@@ -16,6 +19,7 @@ import java.util.Set;
 @Scope(value = "singleton")
 @Component
 public class ServerFunctional implements ServerFunctionalAPI {
+    private static final Logger log = LoggerFactory.getLogger(ServerFunctional.class);
 
     @Autowired
     private ServerServiceAPI serverService;

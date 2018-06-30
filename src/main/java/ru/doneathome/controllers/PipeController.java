@@ -1,5 +1,7 @@
 package ru.doneathome.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.doneathome.model.Pipe;
 
@@ -9,12 +11,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/pipe")
 public class PipeController {
+    private static final Logger log = LoggerFactory.getLogger(PipeController.class);
 
 
     @RequestMapping(value = "/getPipe/{profileName}/{pipeName}", method = RequestMethod.GET)
     public @ResponseBody
     Pipe getPipe(@PathVariable String profileName, @PathVariable String pipeName) {
-
+        log.info("request one pipe. profileName: " + profileName + ", pipeName: " + pipeName);
 
         return new Pipe();
     }
@@ -23,6 +26,7 @@ public class PipeController {
     @RequestMapping(value = "/getPipes", method = RequestMethod.GET)
     public @ResponseBody
     List<Pipe> getPipes() {
+        log.info("request all pipes");
 
         List<Pipe> pipes = new LinkedList<>();
 
