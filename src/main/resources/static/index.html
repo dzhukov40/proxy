@@ -1,6 +1,7 @@
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <script src="/javaScript/main.js"></script>
+
+    <script language="javascript" type="text/javascript" src="javaScript/table.js"></script>
 </head>
 <html>
 <body>
@@ -15,7 +16,37 @@
 </div>
 
 <div id="body">
-    <div id="history" class="chat form"></div>
+
+    <div id="history" class="chat form">
+
+        <button style="font-size:large" onclick="sayHello()">sayHello</button>
+
+        <table border="1" class="main_table">
+            <caption>Таблица размеров обуви</caption>
+            <tr>
+                <th>Россия</th>
+                <th>Великобритания</th>
+                <th>Европа</th>
+                <th>Длина ступни, см</th>
+            </tr>
+            <tr><td>34,5</td><td>3,5</td><td>36</td><td>23</td></tr>
+            <tr><td>35,5</td><td>4</td><td>36⅔</td><td>23–23,5</td></tr>
+            <tr><td>36</td><td>4,5</td><td>37⅓</td><td>23,5</td></tr>
+            <tr><td>36,5</td><td>5</td><td>38</td><td>24</td></tr>
+            <tr><td>37</td><td>5,5</td><td>38⅔</td><td>24,5</td></tr>
+        </table>
+
+
+
+    </div>
+
+
+
+
+
+
+
+
 </div>
 <div id="footer">
     <form method="POST" id="msgform" action="javascript:void(null);" onsubmit="say()">
@@ -30,7 +61,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
 
-<!-- пару моментов про код JavaScript
+<!-- пару моментов про код javaScript
 
 $.ajax - это использование [ajax]
   - $.ajax( url ).done( func ) в метод [done] передаем ф-ию колбек, в которую прийдет ответ
