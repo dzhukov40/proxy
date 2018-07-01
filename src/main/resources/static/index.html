@@ -1,18 +1,12 @@
 <head>
     <link rel="stylesheet" type="text/css" href="styles.css">
-
-    <script language="javascript" type="text/javascript" src="javaScript/table.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript" src="javaScript/main.js"></script>
 </head>
 <html>
 <body>
 <div id="header">
-    <form method="POST" id="nameform" action="javascript:void(null);" onsubmit="login()">
-        <input id="name" name="name" value="" style="font-size:medium" type="text">
-        <input value="Login" style="font-size:large" type="submit">
-    </form>
-    <button value="logout" style="font-size:large" onclick="logout()">logout</button> <!-- -->
-    <button value="test" style="font-size:large" onclick="test()">logout</button> <!-- -->
-
+    <h1 class="main_title">Прокси для локальных портов</h1>
 </div>
 
 <div id="body">
@@ -20,23 +14,13 @@
     <div id="history" class="chat form">
 
         <button style="font-size:large" onclick="sayHello()">sayHello</button>
-
-        <table border="1" class="main_table">
-            <caption>Таблица размеров обуви</caption>
-            <tr>
-                <th>Россия</th>
-                <th>Великобритания</th>
-                <th>Европа</th>
-                <th>Длина ступни, см</th>
-            </tr>
-            <tr><td>34,5</td><td>3,5</td><td>36</td><td>23</td></tr>
-            <tr><td>35,5</td><td>4</td><td>36⅔</td><td>23–23,5</td></tr>
-            <tr><td>36</td><td>4,5</td><td>37⅓</td><td>23,5</td></tr>
-            <tr><td>36,5</td><td>5</td><td>38</td><td>24</td></tr>
-            <tr><td>37</td><td>5,5</td><td>38⅔</td><td>24,5</td></tr>
-        </table>
+        <button style="font-size:large" onclick="initProfileForm()">initProfileForm</button>
+        <button style="font-size:large" onclick="initTableForm()">initTableForm</button>
 
 
+        <!--эти элементы определяются в *.js-->
+        <div class="div_form_profile"></div>
+        <div class="div_main_table"></div>
 
     </div>
 
@@ -44,117 +28,19 @@
 
 
 
-
-
-
 </div>
 <div id="footer">
-    <form method="POST" id="msgform" action="javascript:void(null);" onsubmit="say()">
-        <input id="msg" name="msg" class="msginput" value="" style="font-size:medium" type="text">
-        <input value="Send" class="sendbutton" style="font-size:large" type="submit">
-    </form>
+
+
+    <script>
+        // ----------------------------------------------------------------------
+        // ф-ии инициализации
+        // ----------------------------------------------------------------------
+        initProfileForm();
+        initTableForm();
+    </script>
+
+
 </div>
 </body>
 </html>
-
-<!-- это подключение [ajax] -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
-
-<!-- пару моментов про код javaScript
-
-$.ajax - это использование [ajax]
-  - $.ajax( url ).done( func ) в метод [done] передаем ф-ию колбек, в которую прийдет ответ
-  - $.ajax( url ).fail( func ) в метод [fail] передаем ф-ию колбек, в которую попадем при ошибке
--->
-
-
-<script>
-    var host = "localhost";
-    var port = 8080;
-
-
-    function loadHistory() {
-        <!-- это описание URL запроса -->
-        var settings = {
-            "crossDomain": true,
-            "url": "http://" + host + ":" + port + "/chat/chat",
-            "method": "GET",
-        }
-
-        $.ajax(settings).done(function (response) {
-            $("#history").html(response.replace(/\n/g, "<br />"))
-            $("#history").scrollTop($("#history")[0].scrollHeight);
-        }).fail(function (jqXHR, textStatus) {
-            console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
-        });
-    }
-
-    function say() {
-        var msg = $('#msgform').serialize();
-        var name = $('#nameform').serialize();
-
-        var settings = {
-            "method": "POST",
-            "crossDomain": true,
-            "url": "http://" + host + ":" + port + "/chat/say",
-            "data": name + "&" + msg
-        };
-
-        $.ajax(settings).done(function (response) {
-            $('#msgform').trigger("reset");
-            loadHistory();
-        }).fail(function (jqXHR, textStatus) {
-            alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
-            console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
-        });
-    }
-
-    function login() {
-        var name = $('#nameform').serialize();
-
-        var settings = {
-            "method": "POST",
-            "crossDomain": true,
-            "url": "http://" + host + ":" + port + "/chat/login",
-            "data": name
-        };
-
-        $.ajax(settings).done(function (response) {
-            loadHistory();
-        }).fail(function (jqXHR, textStatus) {
-            alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
-            console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
-        });
-    }
-
-    function logout() {
-        var name = $('#nameform').serialize();
-
-        var settings = {
-            "method": "POST",
-            "crossDomain": true,
-            "url": "http://" + host + ":" + port + "/chat/logout",
-            "data": name
-        };
-
-        $.ajax(settings).done(function (response) {
-            loadHistory();
-        }).fail(function (jqXHR, textStatus) {
-            alert(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
-            console.log(jqXHR.status + " " + jqXHR.statusText + ". " + jqXHR.responseText);
-        });
-    }
-
-    <!-- тестовая ф-ия, нет запроса на Бек -->
-    function test() {
-
-        $("#history").html("<br>приветики");
-       // $("#history").scrollTop($("#history")[0].scrollHeight);
-    }
-
-
-
-    loadHistory();
-    setInterval(loadHistory, 10000);
-</script>

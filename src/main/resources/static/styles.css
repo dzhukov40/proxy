@@ -42,3 +42,20 @@
     height: 30px; /* Height of the footer */
     background: #336666;
 }
+
+.main_title {
+    text-align: center;
+    color: chartreuse;
+}
+
+.main_table, th, td {
+    border: 1px solid black;
+    text-align: center;
+
+    width: 50%;
+    height: 20px;
+    padding: 5px;
+
+
+}
+
