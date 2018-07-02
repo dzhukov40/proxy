@@ -37,7 +37,18 @@ function sayHello(){
 
 
 
+// ----------------------------------------------------------------------
+// глобальные переменные
+// ----------------------------------------------------------------------
 
+// ф-ия постоянного инкрементирования
+var incr = (function () {
+    var i = 0;
+
+    return function () {
+        return i++;
+    }
+})();
 
 
 
@@ -67,21 +78,20 @@ function initProfileForm() {
 // работа с таблицей
 // ----------------------------------------------------------------------
 
-
 function initTableForm() {
 
     let initStringBody = '<table class="main_table"><caption>Карта проксирования портов</caption>\n' +
-        '                   <tr>\n' +
+        '                   <tr class="main_table_column" column_id='+ incr() +'>\n' +
         '                   <th>Россия</th>\n' +
         '                   <th>Великобритания</th>\n' +
         '                   <th>Европа</th>\n' +
         '                   <th>Длина ступни, см</th>\n' +
         '                   </tr>\n' +
-        '                   <tr><td>34,5</td><td>3,5</td><td>36</td><td>23</td></tr>\n' +
-        '                   <tr><td>35,5</td><td>4</td><td>36⅔</td><td>23–23,5</td></tr>\n' +
-        '                   <tr><td>36</td><td>4,5</td><td>37⅓</td><td>23,5</td></tr>\n' +
-        '                   <tr><td>36,5</td><td>5</td><td>38</td><td>24</td></tr>\n' +
-        '                   <tr><td>37</td><td>5,5</td><td>38⅔</td><td>24,5</td></tr>' +
+        '                   <tr class="main_table_column" column_id='+ incr() +'><td>34,5</td><td>3,5</td><td>36</td><td>23</td></tr>\n' +
+        '                   <tr class="main_table_column" column_id='+ incr() +'><td>35,5</td><td>4</td><td>36⅔</td><td>23–23,5</td></tr>\n' +
+        '                   <tr class="main_table_column" column_id='+ incr() +'><td>36</td><td>4,5</td><td>37⅓</td><td>23,5</td></tr>\n' +
+        '                   <tr class="main_table_column" column_id='+ incr() +'><td>36,5</td><td>5</td><td>38</td><td>24</td></tr>\n' +
+        '                   <tr class="main_table_column" column_id='+ incr() + '><td>37</td><td>5,5</td><td>38⅔</td><td>24,5</td></tr>' +
         '                 </table>';
 
 
@@ -89,6 +99,27 @@ function initTableForm() {
     $('.div_main_table').append(initStringBody); // вставляем
 
 }
+
+function addTableColumn(event) {
+
+    let addColumnString = '<tr class="main_table_column" column_id='+ incr() +'><td>34,5</td><td>3,5</td><td>36</td><td>23</td></tr>\n';
+
+    console.log(event.currentTarget);
+
+
+    $('.main_table').append(addColumnString);
+
+}
+
+function getCountTableColumn() {
+
+    let rowCount = $('[column_id]').length - 1;
+
+    console.log('getCountTableColumn() return: ' + rowCount);
+    return rowCount;
+}
+
+
 
 
 
